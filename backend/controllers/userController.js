@@ -71,23 +71,23 @@ const register = async (req, res) => {
 }
 
 
-const logout = async (req, res) => {
-    try {
-        res.clearCookie('token', {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None'
-        })
-        res.status(200).json({ message: 'Logged out successfully !' })
-    } catch (err) {
-        res.clearCookie('token', {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'None'
-        })
-        res.status(400).json({ message: "Failed to logout !" })
-    }
-}
+// const logout = async (req, res) => {
+//     try {
+//         res.clearCookie('token', {
+//             httpOnly: true,
+//             secure: true,
+//             sameSite: 'None'
+//         })
+//         res.status(200).json({ message: 'Logged out successfully !' })
+//     } catch (err) {
+//         res.clearCookie('token', {
+//             httpOnly: true,
+//             secure: true,
+//             sameSite: 'None'
+//         })
+//         res.status(400).json({ message: "Failed to logout !" })
+//     }
+// }
 
 const dashboard =  async (req, res) => {
     User.findOne().then(users => res.json(users)).catch( err => res.json(err))

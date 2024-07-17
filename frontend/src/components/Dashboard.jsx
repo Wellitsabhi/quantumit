@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Button } from 'react-bootstrap';
-import { FaCog, FaTimes } from 'react-icons/fa';
+import { format } from 'date-fns';
 import Axios from "axios";
 
 Axios.defaults.withCredentials = true;
@@ -14,12 +13,9 @@ const UserTable = () => {
   const getUsers = async () => {
     try {
       const response = await Axios.get(`${import.meta.env.VITE_BACKEND_URL}/dashboard`);
+      console.log(response);
       console.log(response.data);
-      console.log(response.data.email);
-      console.log(response.data.name);
-      console.log(response.data.password);
-      console.log(response.data.dateofbirth);
-      setUsers(response.data); 
+      setUsers([response.data]); 
       
     } catch (err) {
       setError(err);
@@ -33,6 +29,31 @@ const UserTable = () => {
 
 if (loading) return <p>Loading...</p>;
 if (error) return <p>Error loading data: {error.message}</p>;
+
+const formatDate = (dateString) => {
+  if (!dateString) return 'N/A';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return 'Invalid Date';
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return date.toLocaleDateString(undefined, options);
+};
+
+// function isoFormatDMY(date) {
+//   const day = String(date.getDate()).padStart(2, '0');
+//   const month = String(date.getMonth() + 1).padStart(2, '0'); 
+//   const year = date.getFullYear();
+
+//   return `${day}/${month}/${year}`;
+// }
+
+// function parseISOString(s) {
+//   var b = s.split(/\D+/);
+//   return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
+// }
+
+
+
+
   return (
     
     <div className="container mx-auto p-4">
@@ -48,22 +69,13 @@ if (error) return <p>Error loading data: {error.message}</p>;
           </tr>
         </thead>
         <tbody>
-          {users.map((user, index) => (
+          {users.map((user) => (
             <tr key={user._id} className="border-b">
               <td className="py-2 px-4 text-sm text-gray-600">{user.name}</td>
-              <td className="py-2 px-4 text-sm text-gray-600">{user.dateofbirth}</td>
+              {/* <td className="py-2 px-4 text-sm text-gray-600">{isoFormatDMY(parseISOString(user.dateOfBirth))}</td> */}
+              <td className="py-2 px-4 text-sm text-gray-600">{formatDate(user.dateofbirth)}</td>
               <td className="py-2 px-4 text-sm text-gray-600">{user.email}</td>
               <td className="py-2 px-4 text-sm text-gray-600">{user.password}</td>
-              
-            
-              <td className="py-2 px-4 text-sm text-gray-600">
-                <Button variant="link" className="text-blue-500">
-                  <FaCog />
-                </Button>
-                <Button variant="link" className="text-red-500 ml-2">
-                  <FaTimes />
-                </Button>
-              </td>
             </tr>
           ))}
         </tbody>
